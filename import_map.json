@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "ramda": "https://deno.land/x/ramda/index.js",
+    "std/": "https://deno.land/std@0.149.0/",
+    "validator": "https://esm.sh/validator@13.7.0",
+    "chai": "https://esm.sh/chai@4.3.6"
+  }
+}
