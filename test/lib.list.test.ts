@@ -3,11 +3,11 @@
 import {assert, validator} from "../deps_test.ts"
 import {assertValidApp, assertValidUrl} from "./common.ts";
 import * as gplay from "../index.ts"
-import {collection} from "../index.ts";
+import {Collection} from "../index.ts";
 
 Deno.test('should fetch a valid application list for the top free collection', async () => {
   await gplay.list({
-    collection: gplay.collection.TOP_FREE,
+    collection: gplay.Collection.TOP_FREE,
     num: 100
   })
     .then((apps) => apps.map(assertValidApp))
@@ -16,7 +16,7 @@ Deno.test('should fetch a valid application list for the top free collection', a
 
 Deno.test('should fetch a valid application list for the top paid collection', async () => {
   await gplay.list({
-    collection: gplay.collection.TOP_PAID,
+    collection: gplay.Collection.TOP_PAID,
     num: 100
   })
     .then((apps) => apps.map(assertValidApp))
@@ -25,7 +25,7 @@ Deno.test('should fetch a valid application list for the top paid collection', a
 
 Deno.test('should fetch a valid application on a given collection regardless of the language', async () => {
   await gplay.list({
-    collection: gplay.collection.TOP_FREE,
+    collection: gplay.Collection.TOP_FREE,
     country: 'ru',
     lang: 'ru',
     num: 5
@@ -36,8 +36,8 @@ Deno.test('should fetch a valid application on a given collection regardless of 
 
 Deno.test('should fetch a valid application list for the given category and collection', async () => {
   await gplay.list({
-    category: gplay.category.GAME_ACTION,
-    collection: gplay.collection.TOP_FREE
+    category: gplay.Category.GAME_ACTION,
+    collection: gplay.Collection.TOP_FREE
   })
     .then((apps) => apps.map(assertValidApp))
     .then((apps) => apps.map((app) => assert(app.free)));
@@ -45,8 +45,8 @@ Deno.test('should fetch a valid application list for the given category and coll
 
 Deno.test('should fetch a valid application list for the top free collection and GAME category', async () => {
   await gplay.list({
-    collection: collection.TOP_FREE,
-    category: gplay.category.GAME,
+    collection: Collection.TOP_FREE,
+    category: gplay.Category.GAME,
     num: 100
   })
     .then((apps) => apps.map(assertValidApp))
@@ -54,11 +54,11 @@ Deno.test('should fetch a valid application list for the top free collection and
 });
 
 Deno.test('should return error for application list for the grossing collection and FAMILY category', () => {
-  const collection = gplay.collection.GROSSING;
+  const collection = gplay.Collection.GROSSING;
 
   return gplay.list({
     collection,
-    category: gplay.category.FAMILY,
+    category: gplay.Category.FAMILY,
     num: 100
   })
     .catch((error) => assert.equal(error.message, `The collection ${collection} is invalid for the given category, top apps or new apps`));
@@ -66,46 +66,18 @@ Deno.test('should return error for application list for the grossing collection 
 
 Deno.test('should fetch apps for application list for the new free collection and FAMILY category', async () => {
   await gplay.list({
-    collection: gplay.collection.TOP_FREE,
-    category: gplay.category.FAMILY,
+    collection: gplay.Collection.TOP_FREE,
+    category: gplay.Category.FAMILY,
     num: 100
   })
     .then((apps) => apps.map(assertValidApp))
     .then((apps) => apps.map((app) => assert(app.free)));
 });
 
-Deno.test('should validate the category', async () => {
-  await gplay.list({
-    category: 'wrong',
-    collection: gplay.collection.TOP_FREE
-  })
-    .then(assert.fail)
-    .catch((e) => assert.equal(e.message, 'Invalid category wrong'));
-});
-
-Deno.test('should validate the collection', async () => {
-  await gplay.list({
-    category: gplay.category.GAME_ACTION,
-    collection: 'wrong'
-  })
-    .then(assert.fail)
-    .catch((e) => assert.equal(e.message, 'Invalid collection wrong'));
-});
-
-Deno.test('should validate the age range', () => {
-  return gplay.list({
-    category: gplay.category.GAME_ACTION,
-    collection: gplay.collection.TOP_FREE,
-    age: 'elderly'
-  })
-    .then(assert.fail)
-    .catch((e) => assert.equal(e.message, 'Invalid age range elderly'));
-});
-
 Deno.test('should fetch apps with fullDetail', async () => {
   await gplay.list({
-    category: gplay.category.GAME_ACTION,
-    collection: gplay.collection.TOP_FREE,
+    category: gplay.Category.GAME_ACTION,
+    collection: gplay.Collection.TOP_FREE,
     fullDetail: true,
     num: 5
   })
@@ -147,8 +119,8 @@ Deno.test('should fetch apps with fullDetail', async () => {
 // results with no downloads (less fields, prone to failures)
 Deno.test('It should not fail with apps with no downloads', async () => {
     await gplay.list({
-      category: gplay.category.GAME_ACTION,
-      collection: gplay.collection.TOP_PAID,
+      category: gplay.Category.GAME_ACTION,
+      collection: gplay.Collection.TOP_PAID,
       num: 20
     })
       .then((apps) => apps.map(assertValidApp))
@@ -157,8 +129,8 @@ Deno.test('It should not fail with apps with no downloads', async () => {
 
 Deno.test('It should not fail with apps with no downloads and fullDetail', async () => {
     await gplay.list({
-      category: gplay.category.GAME_ACTION,
-      collection: gplay.collection.TOP_FREE,
+      category: gplay.Category.GAME_ACTION,
+      collection: gplay.Collection.TOP_FREE,
       num: 10,
       fullDetail: true
     })
@@ -167,14 +139,14 @@ Deno.test('It should not fail with apps with no downloads and fullDetail', async
 );
 
 Deno.test('should be able to retreive a list for each category', async () => {
-  const categoryIds = Object.keys(gplay.category);
+  const categoryIds = Object.keys(gplay.Category);
 
   const fetchCategory = (category) => gplay.list({
     category,
-    collection: gplay.collection.TOP_FREE,
+    collection: gplay.Collection.TOP_FREE,
     num: 10
   }).catch(() => {
-    if (category !== gplay.category.WATCH_FACE) {
+    if (category !== gplay.Category.WATCH_FACE) {
       assert.equal(category, void 0, 'invalid category');
     }
   });

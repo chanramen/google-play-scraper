@@ -38,7 +38,7 @@ Deno.test('should retrieve the most recent reviews of an app', () => {
 Deno.test('should retrieve the most helpfull reviews of an app', () => {
   return gplay.reviews({
     appId: 'com.dxco.pandavszombies',
-    sort: c.sort.HELPFULNESS
+    sort: c.Sort.HELPFULNESS
   })
     .then((reviews) => {
       reviews.data.map(assertValid);
@@ -48,7 +48,7 @@ Deno.test('should retrieve the most helpfull reviews of an app', () => {
 Deno.test('should retrieve the most rated reviews of an app', () => {
   return gplay.reviews({
     appId: 'com.dxco.pandavszombies',
-    sort: c.sort.RATING
+    sort: c.Sort.RATING
   })
     .then((reviews) => {
       reviews.data.map(assertValid);

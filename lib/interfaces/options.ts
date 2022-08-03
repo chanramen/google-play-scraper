@@ -19,5 +19,9 @@ interface FetchOptions extends RequestOptions {
   headers?: Record<string, string>
 }
 
-export type {BaseOptions, RequestOptions, FetchOptions}
+interface BaseAppRequestOptions extends BaseOptions{
+  fullDetail?: boolean
+}
+
+export type {BaseOptions, RequestOptions, FetchOptions, BaseAppRequestOptions}
 export {Method}

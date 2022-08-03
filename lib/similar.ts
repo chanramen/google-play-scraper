@@ -4,11 +4,11 @@ import * as scriptData from "./utils/scriptData.ts"
 import {BASE_URL} from "./constants.ts";
 import {processFullDetailApps, checkFinished} from "./utils/processPages.ts";
 import {AppItemFullDetail} from "./interfaces/app/appItem.ts";
-import {SimilarRequestOptions} from "./interfaces/similar/similarRequestOptions.ts";
+import {SimilarRequestOptions, SimilarRequestOptionsReturnType} from "./interfaces/similar/similarRequestOptions.ts";
 
 const debug = debugInit('google-play-scraper:similar');
 
-function similar(opts: SimilarRequestOptions): Promise<AppItemFullDetail[]> {
+function similar<T extends SimilarRequestOptions>(opts: T): Promise<SimilarRequestOptionsReturnType<T>[]> {
   return new Promise(function (resolve, reject) {
     validateSimilarParameters(opts);
 
@@ -49,7 +49,7 @@ function validateSimilarParameters(opts) {
 }
 
 const INITIAL_MAPPINGS = {
-  clusters: ['ds:6', 1, 1],
+  clusters: ['ds:5', 1, 1],
   apps: ['ds:3', 0, 1, 0, 21, 0],
   token: ['ds:3', 0, 1, 0, 21, 1, 3, 1]
 };

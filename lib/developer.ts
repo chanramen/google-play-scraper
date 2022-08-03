@@ -3,8 +3,10 @@ import {BASE_URL} from "./constants.ts";
 import request from "./utils/request.ts";
 import {debug as debugInit, queryString as qs, R, url} from "../deps.ts"
 import {checkFinished, processFullDetailApps} from "./utils/processPages.ts"
-import {DeveloperRequestOptions} from "./interfaces/developer/developerRequestOptions.ts";
-import {AppItemFullDetail} from "./interfaces/app/appItem.ts";
+import {
+  DeveloperRequestOptions,
+  DeveloperRequestOptionsReturnType
+} from "./interfaces/developer/developerRequestOptions.ts";
 import {FetchOptions, Method, RequestOptions} from "./interfaces/options.ts";
 
 const debug = debugInit('google-play-scraper:developer');
@@ -29,7 +31,7 @@ function buildUrl (opts: DeveloperRequestOptions): string {
   return fullURL;
 }
 
-function developer (opts: DeveloperRequestOptions): Promise<AppItemFullDetail[]> {
+function developer<T extends DeveloperRequestOptions>(opts: T): Promise<DeveloperRequestOptionsReturnType<T>[]> {
   return new Promise(function (resolve, reject) {
     if (!opts.devId) {
       throw Error('devId missing');

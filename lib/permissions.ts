@@ -63,7 +63,7 @@ function processShortPermissionsData (html) {
     html = scriptData.parse(html);
   }
 
-  const commonPermissions = html[c.permission.COMMON];
+  const commonPermissions = html[c.Permission.COMMON];
 
   if (!commonPermissions) {
     return [];
@@ -81,7 +81,7 @@ function processPermissionData (html) {
 
   debug(`html %o`, html);
 
-  const permissions = Object.values(c.permission).reduce((permissionAccummulator: string[], permission) => {
+  const permissions = Object.values(c.Permission).reduce((permissionAccummulator: string[], permission) => {
     if (!html[permission]) {
       return permissionAccummulator;
     }

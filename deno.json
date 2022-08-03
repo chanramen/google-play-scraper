@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
     "noImplicitAny": false
-  },
-  "importMap": "import_map.json"
+  }
 }

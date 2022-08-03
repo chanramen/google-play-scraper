@@ -1,4 +1,5 @@
 import {debug as debugInit, R} from "../../deps.ts";
+import * as path from "https://deno.land/std/path/mod.ts";
 
 const debug = debugInit("google-play-scraper:scriptData'")
 

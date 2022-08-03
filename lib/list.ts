@@ -1,14 +1,14 @@
 'use strict';
 
 import request from "./utils/request.ts";
-import {R, queryString as qs, url, debug as debugInit} from "../deps.ts"
+import {debug as debugInit, queryString as qs, R, url} from "../deps.ts"
 import * as c from "./constants.ts"
+import {BASE_URL, Collection} from "./constants.ts"
 import * as scriptData from "./utils/scriptData.ts"
-import {BASE_URL, collection} from "./constants.ts";
 import {processFullDetailApps} from "./utils/processPages.ts";
-import {ListRequestOptions} from "./interfaces/list/listRequestOptions.ts";
-import {AppItem, AppItemFullDetail} from "./interfaces/app/appItem.ts";
+import {ListRequestOptions, ListRequestOptionsReturnType} from "./interfaces/list/listRequestOptions.ts";
 import {Method} from "./interfaces/options.ts";
+
 const debug = debugInit('google-play-scraper:list');
 
 function getBodyForRequests (payloadOpts) {
@@ -18,7 +18,7 @@ function getBodyForRequests (payloadOpts) {
   return body;
 }
 
-function list (opts: ListRequestOptions): Promise<AppItemFullDetail[]> {
+function list<T extends ListRequestOptions>(opts: T): Promise<ListRequestOptionsReturnType<T>[]> {
   return new Promise(function (resolve, reject) {
     validate(opts);
 
@@ -30,7 +30,7 @@ function list (opts: ListRequestOptions): Promise<AppItemFullDetail[]> {
 
     const body = getBodyForRequests({
       num: fullListOpts.num,
-      collection: CLUSTER_NAMES[fullListOpts.collection ?? collection.TOP_FREE],
+      collection: CLUSTER_NAMES[fullListOpts.collection ?? Collection.TOP_FREE],
       category: fullListOpts.category
     });
 
@@ -56,17 +56,17 @@ function list (opts: ListRequestOptions): Promise<AppItemFullDetail[]> {
 }
 
 function validate (opts) {
-  opts.category = opts.category || c.category.APPLICATION;
-  if (opts.category && !R.includes(opts.category, R.values(c.category))) {
+  opts.category = opts.category || c.Category.APPLICATION;
+  if (opts.category && !R.includes(opts.category, R.values(c.Category))) {
     throw Error('Invalid category ' + opts.category);
   }
 
-  opts.collection = opts.collection || c.collection.TOP_FREE;
-  if (!R.includes(opts.collection, R.values(c.collection))) {
+  opts.collection = opts.collection || c.Collection.TOP_FREE;
+  if (!R.includes(opts.collection, R.values(c.Collection))) {
     throw Error(`Invalid collection ${opts.collection}`);
   }
 
-  if (opts.age && !R.includes(opts.age, R.values(c.age))) {
+  if (opts.age && !R.includes(opts.age, R.values(c.Age))) {
     throw Error(`Invalid age range ${opts.age}`);
   }
 }

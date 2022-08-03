@@ -8,7 +8,7 @@ type ErrorResponse = {
   statusCode: number
 }
 
-class NetworkError extends Error{
+class NetworkError extends Error {
   constructor(message: string, public response: ErrorResponse) {
     super(message);
   }
@@ -29,7 +29,7 @@ async function fetchUrl(opts: FetchOptions): Promise<{ body: string }> {
 }
 
 function doRequest(opts: FetchOptions, limit?: number): Promise<string> {
-  let req: (opts: FetchOptions) => Promise<{body: string}>;
+  let req: (opts: FetchOptions) => Promise<{ body: string }>;
   if (limit) {
     req = throttled(
       fetchUrl, {
@@ -48,22 +48,22 @@ function doRequest(opts: FetchOptions, limit?: number): Promise<string> {
   });
 }
 
-function request (opts: FetchOptions, limit?: number): Promise<string> {
+async function request(opts: FetchOptions, limit?: number): Promise<string> {
   debug('Making request: %j', opts);
-  return doRequest(opts, limit)
-    .then(function (response) {
-      debug('Request finished');
-      return response;
-    })
-    .catch(function (reason: NetworkError) {
-      debug('Request error:', reason.message, reason.response && reason.response.statusCode);
+  try {
+    return await doRequest(opts, limit)
+  } catch (e: unknown) {
+    if (!(e instanceof NetworkError)) {
+      throw e
+    }
+    debug('Request error:', e.message, e.response && e.response.statusCode);
 
-      let message = 'Error requesting Google Play:' + reason.message;
-      if (reason.response && reason.response.statusCode === 404) {
-        message = 'App not found (404)';
-      }
-      throw Error(message);
-    });
+    let message = 'Error requesting Google Play:' + e.message;
+    if (e.response && e.response.statusCode === 404) {
+      message = 'App not found (404)';
+    }
+    throw Error(message);
+  }
 }
 
 export default request;

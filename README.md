@@ -1,6 +1,18 @@
 # google-play-scraper [![workflow](https://github.com/facundoolano/google-play-scraper/actions/workflows/tests.yml/badge.svg)](https://github.com/facundoolano/google-play-scraper/actions/workflows/tests.yml)
 Node.js module to scrape application data from the Google Play store.
 
+## This is a port to Deno runtime of original [google play scraper project](https://github.com/facundoolano/google-play-scraper)
+Port is almost identical to original, except for:
+1. Memoized version of methods of deleted. If you want caching, implement it yourself
+2. Type checks for functions was or will be deleted — if you're trying to get around typescript's restrictions, you should know what are you doing 
+
+TO-DO list:
+1. Enable noImplicitAny and write typings for whole library
+
+___
+
+## ORIGINAL DESCRIPTION:
+
 ### Related projects
 
 * [app-store-scraper](https://github.com/facundoolano/app-store-scraper): a scraper with a similar interface for the iTunes app store.

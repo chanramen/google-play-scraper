@@ -135,7 +135,7 @@ const MAPPINGS = {
   },
   recentChanges: ['ds:4', 1, 2, 144, 1, 1],
   comments: {
-    path: ['ds:8', 0],
+    path: ['ds:7', 0],
     isArray: true,
     fun: helper.extractComments
   }

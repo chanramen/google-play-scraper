@@ -4,13 +4,13 @@ import {BASE_URL} from "./constants.ts";
 import {checkFinished, processFullDetailApps} from "./utils/processPages.ts";
 import * as scriptData from "./utils/scriptData.ts";
 import {AppItem, AppItemFullDetail} from "./interfaces/app/appItem.ts";
-import {Price, SearchRequestOptions} from "./interfaces/search/searchRequestOptions.ts";
+import {Price, SearchRequestOptions, SearchRequestOptionsReturnType} from "./interfaces/search/searchRequestOptions.ts";
 
 /*
  * Make the first search request as in the browser and call `checkfinished` to
  * process the next pages.
  */
-function initialRequest (opts): Promise<AppItemFullDetail[]> {
+function initialRequest (opts: SearchRequestOptions): Promise<AppItem[]> {
   // sometimes the first result page is a cluster of subsections,
   // need to skip to the full results page
   function skipClusterPage (html) {
@@ -162,20 +162,8 @@ const SECTIONS_MAPPING = {
   aboutResultsTitle: ['ds:4', 0, 1, 0, 31, 0]
 };
 
-function getPriceGoogleValue (value) {
-  switch (value.toLowerCase()) {
-    case 'free':
-      return 1;
-    case 'paid':
-      return 2;
-    case 'all':
-    default:
-      return 0;
-  }
-}
+async function search<T extends SearchRequestOptions>(appData: (AppRequestOptions) => Promise<AppItemFullDetail>, opts: T): Promise<SearchRequestOptionsReturnType<T>[]> {
 
-function search (appData: (AppRequestOptions) => Promise<AppItemFullDetail>, opts: SearchRequestOptions): Promise<AppItemFullDetail[]> {
-  return new Promise<AppItemFullDetail[]>(function (resolve, reject) {
     if (!opts || !opts.term) {
       throw Error('Search term missing');
     }
@@ -184,27 +172,18 @@ function search (appData: (AppRequestOptions) => Promise<AppItemFullDetail>, opt
       throw Error("The number of results can't exceed 250");
     }
 
-    opts = {
-      term: encodeURIComponent(opts.term),
-      lang: opts.lang || 'en',
-      country: opts.country || 'us',
-      num: opts.num || 20,
-      fullDetail: opts.fullDetail,
-      price: opts.price ?? Price.ALL,
-      throttle: opts.throttle,
-      requestOptions: opts.requestOptions
-    };
+    opts.term = encodeURIComponent(opts.term)
+    opts.lang = opts.lang ?? 'en'
+    opts.country = opts.country ?? 'us'
+    opts.num = opts.num ?? 20
+    opts.price = opts.price ?? Price.ALL
 
-    initialRequest(opts)
-      .then(resolve)
-      .catch(reject);
-  }).then((results) => {
+  const results = await initialRequest(opts);
     if (opts.fullDetail) {
       // if full detail is wanted get it from the app module
-      return Promise.all(results.map((app) => appData({ ...opts, appId: app.appId })));
+      return (await Promise.all(results.map((app) => appData({ ...opts, appId: app.appId })))) as SearchRequestOptionsReturnType<T>[];
     }
-    return results;
-  });
+    return results as SearchRequestOptionsReturnType<T>[];
 }
 
 export default search;

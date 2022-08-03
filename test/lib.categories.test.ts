@@ -11,7 +11,7 @@ Deno.test('should fetch valid list of categories', () => {
 
 Deno.test('should have all categories from constant list of categories', () => {
   return gplay.categories().then(categories => {
-    const categoriesConst = Object.keys(gplay.category);
+    const categoriesConst = Object.keys(gplay.Category);
     assert.deepEqual(
       R.difference(categories, categoriesConst),
       [],

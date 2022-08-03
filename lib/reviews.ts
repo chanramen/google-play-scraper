@@ -11,7 +11,7 @@ function reviews (opts: ReviewsRequestOptions): Promise<ReviewsPaginationData> {
   return new Promise(function (resolve, reject) {
     validate(opts);
     const fullOptions = Object.assign({
-      sort: c.sort.NEWEST,
+      sort: c.Sort.NEWEST,
       lang: 'en',
       country: 'us',
       num: 150,
@@ -30,7 +30,7 @@ function validate (opts) {
     throw Error('appId missing');
   }
 
-  if (opts.sort && !R.includes(opts.sort, R.values(c.sort))) {
+  if (opts.sort && !R.includes(opts.sort, R.values(c.Sort))) {
     throw new Error('Invalid sort ' + opts.sort);
   }
 }

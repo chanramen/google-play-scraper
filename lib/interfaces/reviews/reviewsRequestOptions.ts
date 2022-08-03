@@ -1,12 +1,12 @@
 import {BaseOptions} from "../options.ts";
+import {Sort} from "../../constants.ts";
 
-// FIXME change sort to enum
 
 interface ReviewsRequestOptions extends BaseOptions {
   appId: string
   lang?: string
   country?: string
-  sort?: number
+  sort?: Sort
   num?: number,
   paginate?: boolean
   nextPaginationToken?: string
